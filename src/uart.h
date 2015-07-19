@@ -65,10 +65,13 @@ extern "C" {
 
 void uart0Init     (uint32_t baudRate);
 void uart1Init     (uint32_t baudRate);
+void uart2Init     (uint32_t baudRate);
 void uart0SendChar (char buffer);
 void uart0Send     (char *buffer, uint32_t length);
 void uart1SendChar (char buffer);
 void uart1Send     (char *buffer, uint32_t length);
+void uart2SendChar (char buffer);
+void uart2Send     (char *buffer, uint32_t length);
 
 #ifdef __cplusplus
 }

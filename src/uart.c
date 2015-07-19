@@ -94,7 +94,7 @@ void uart1Init(uint32_t baudRate) {
   LPC_USART1->CFG |= UART_ENABLE;
 }
 
-void uart1Init(uint32_t baudRate) {
+void uart2Init(uint32_t baudRate) {
   uint32_t clk;
   const uint32_t UARTCLKDIV=1;
 
