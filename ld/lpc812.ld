@@ -1,0 +1,47 @@
+MEMORY
+{
+  flash (rx) : ORIGIN = 0x00000000, LENGTH = 16k
+  ram (rwx) : ORIGIN = 0x10000000, LENGTH = 4k
+}
+
+SECTIONS
+{
+    .text :
+    {
+        KEEP(*(.isr_vector))
+        *(.after_vectors*)
+        *(.text*)
+        *(.rodata .rodata.*)
+        . = ALIGN(4);
+
+        PROVIDE(__init_array_start = .);
+        KEEP(*(SORT(.init_array.*)))
+        KEEP(*(.init_array))
+        PROVIDE(__init_array_end = .);
+
+        . = ALIGN(4);
+        _etext = .;
+    } > flash
+
+    .data :
+    {
+        _data = .;
+        *(vtable)
+        *(.data*)
+        . = ALIGN(4) ;
+        _edata = .;
+    } > ram AT > flash
+
+    .bss :
+    {
+        _bss = .;
+        *(.bss*)
+        *(COMMON)
+        . = ALIGN(4) ;
+        _ebss = .;
+        PROVIDE(end = .);
+    } > ram
+
+    PROVIDE(_pvHeapStart = .);
+    PROVIDE(_vStackTop = ORIGIN(ram) + LENGTH(ram));
+}
