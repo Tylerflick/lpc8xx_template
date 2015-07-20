@@ -27,9 +27,12 @@
 *.i*86
 *.x86_64
 *.hex
+*.bin
+*.axf
 
 # Debug files
 *.dSYM/
 
 # System Files
 .DS_Store
+.ycm_extra_conf.py

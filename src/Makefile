@@ -35,6 +35,7 @@ OBJS   				= main.o \
 				        uart.o \
 				        mrt.o \
 				        printf.o \
+						onewire.o \
 				        printf-retarget.o \
 				        system_LPC8xx.o \
 				        gcc_startup_lpc8xx.o
