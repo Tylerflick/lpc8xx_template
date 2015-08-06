@@ -39,7 +39,7 @@
 
 volatile uint32_t mrt_counter = 0;
 
-void MRT_IRQHandler(void)
+extern void MRT_IRQHandler(void)
 {
   if ( LPC_MRT->Channel[0].STAT & MRT_STAT_IRQ_FLAG )
   {
@@ -49,7 +49,7 @@ void MRT_IRQHandler(void)
   return;
 }
 
-void mrtInit(uint32_t delay)
+void mrt_init(uint32_t delay)
 {
   /* Enable clock to MRT and reset the MRT peripheral */
   LPC_SYSCON->SYSAHBCLKCTRL |= (0x1<<10);
@@ -72,8 +72,9 @@ void mrtInit(uint32_t delay)
   return;
 }
 
-void mrtDelay(uint32_t ticks)
+void mrt_delay(uint32_t ticks)
 {
   mrt_counter = 0;
   while(mrt_counter < ticks);
+
 }

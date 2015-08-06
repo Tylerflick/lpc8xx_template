@@ -1,39 +1,32 @@
-# LPC810 CodeBase
+# LPC8xx Template
 
-Open source code base for the ARM Cortex M0+ LPC810 family from NXP.
+## Intro
 
-This code base is intended to work with the LPC810 in a DIP8 package.  While these drivers are based on the original LPC800 example code from NXP, the LPC810 has limited resources (4KB flash and 1KB SRAM), so smaller, lighter-weight drivers had to be written to get the most out of these resources we have.
+This is a starter template forked from K. Townsend's, microbuilder, LPC810_CodeBase.
+The original can be found [here](https://github.com/microbuilder/LPC810_CodeBase).
 
-The current code implements the following peripheral drivers:
+This starter template supports all LPC8xx series MCU's with the original goal of the LPC810_CodeBase, to provide a very small abstraction layer on top of the CMSIS libraries. The libraries provided in the LPCOpen repo are nice, but they tend to be very large and mask away details from the user.
 
-- A basic SPI driver
-- Some simple GPIO helper functions (although GPIO should normally be accessed directly via the appropriate registers)
-- A simple driver for UART0 and printf-redirection that allows 'printf' output to be transmitted to UART0
-- A basic multi-rate timer driver that allows us to set delays
+## Feature Set
+* All the original work from the LPC810_CodeBase plus:
+* Support for multiple UART channels.
+* A blocking one shot timer that can be used with precision to the microsecond.
+* A basic Maxim 1wire driver.
+* A DS18B20 driver.
+* Up to date documentation from NXP.
 
-The code base also implements a mini printf that takes up much less space than the default printf used in most libc variants.  If necessary, it's easy to change the printf redirection to a location other than UART0 via the printf-redirection.c file.
+## To Do
+* Refactor `src` into a more common `src` & `inc` directories pattern.
+* Add add floating point support to the `printf` function.
+* Allow for different baud rates when using multiple UART channels in one project.
+* Add multiple device support to DS18B20 library.
 
-# Using the Makefile
-
-If you wish to use 'make' from the command-line, you can run the following commands:
+## Supported Make Commands
 
 - `make clean`
 - `make all`
 
-## Common 'Make' Errors
-
-### make: arm-none-eabi-gcc: No such file or directory
-
-If you get this error, you need to add the '/bin' folder of your toolchain to your 'system path' variable.
-
-On OS X or Linux this can be done with the following command ([GCC ARM Embedded 2014 Q2](https://launchpad.net/gcc-arm-embedded/4.8/4.8-2014-q2-update) used below, stored in the user's `/Downloads` folder):
-
-```
-export PATH=$HOME/Downloads/gcc-arm-none-eabi-4_8-2014q2/bin:$PATH
-```
-
-You can test if GCC is available on the system path by running the following command:
-
-```
-arm-none-eabi-gcc --version
-```
+## Pull Requests
+Before submitting a pull request please ensure the following:
+* The change set follows the styling found in the repo. Think Linux kernel style guide.
+* If the change set is fixing bug's or adding support to the original files in LPC810_CodeBase, please submit it there.

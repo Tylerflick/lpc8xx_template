@@ -6,7 +6,7 @@
 
     Software License Agreement (BSD License)
 
-    Copyright (c) 2013, K. Townsend (microBuilder.eu)
+    Copyright (c) 2015, Tyler Hoeflicker
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -33,10 +33,15 @@
 */
 /**************************************************************************/
 #include <stdio.h>
+#include <stdlib.h>
+#include <stddef.h>
 #include "LPC8xx.h"
 #include "gpio.h"
 #include "mrt.h"
 #include "uart.h"
+#include "one_wire.h"
+#include "ds18b20.h"
+#include "delay.h"
 
 #if defined(__CODE_RED)
   #include <cr_section_macros.h>
@@ -44,16 +49,12 @@
   __CRP const unsigned int CRP_WORD = CRP_NO_CRP ;
 #endif
 
-#define LED_LOCATION    (2)
+const BUF_SIZE = 10;
+char ser_buf[10];
+uint8_t buf_pos = 0;
 
-/* This define should be enabled if you want to      */
-/* maintain an SWD/debug connection to the LPC810,   */
-/* but it will prevent you from having access to the */
-/* LED on the LPC810 Mini Board, which is on the     */
-/* SWDIO pin (PIO0_2).                               */
-// #define USE_SWD
-
-void configurePins() {
+void cfg_pins()
+{
   /* Enable SWM clock */
    LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 7);  // this is already done in SystemInit()
 
@@ -64,7 +65,7 @@ void configurePins() {
   /* U1_TXD */
   /* U1_RXD */
   // LPC_SWM->PINASSIGN1 = 0xff0f10ffUL;
-  LPC_SWM->PINASSIGN1 = 0xff100fffUL; 
+  LPC_SWM->PINASSIGN1 = 0xff100fffUL;
   /* Pin Assign 1 bit Configuration */
   #if !defined(USE_SWD)
     /* Pin setup generated via Switch Matrix Tool
@@ -91,41 +92,68 @@ void configurePins() {
        ------------------------------------------------
        NOTE: LED on PIO0_2 unavailable due to SWDIO!
        ------------------------------------------------ */
-    LPC_SWM->PINENABLE0 = 0xffffffb3UL;   
-  #endif  
+    LPC_SWM->PINENABLE0 = 0xffffffb3UL;
+  #endif
 }
 
-extern void UART0_IRQHandler() {
+void report_tmp() {
+  printf("%d", read_temp());
+}
+
+extern void UART0_IRQHandler()
+{
 	if(LPC_USART0->STAT & UART_STATUS_RXRDY) {
-    char buf = LPC_USART0->RXDATA;
-    uart1SendChar(buf);
-    // uart0SendChar(buf);
+    if (buf_pos >= BUF_SIZE) {
+      buf_pos = 0;
+    }
+     ser_buf[buf_pos] = LPC_USART0->RXDATA;
+    ++buf_pos;
 	}
 }
 
-extern void UART1_IRQHandler() {
-  if(LPC_USART1->STAT & UART_STATUS_RXRDY) {
-    char buf = LPC_USART1->RXDATA;
-    uart0SendChar(buf);
-  }
+extern void UART1_IRQHandler()
+{
+	if(LPC_USART1->STAT & UART_STATUS_RXRDY) {
+    if (buf_pos >= BUF_SIZE) {
+      buf_pos = 0;
+    }
+     ser_buf[buf_pos] = LPC_USART1->RXDATA;
+     ++buf_pos;
+	}
 }
 
-int main(void) {
-  gpioInit();
-  uart0Init(9600);
-  uart1Init(9600);
+void com_evt_hd()
+{
 
-  configurePins();
+  uint8_t curByte = ser_buf[buf_pos - 1];
+  if (curByte != 't' && curByte != 'c') {
+    return;
+  }
+
+  if (curByte == 't') {
+    report_tmp();
+    buf_pos = 0;
+    return;
+  }
+
+  return;
+}
+
+int main(void)
+{
+  cfg_pins();
+  gpio_init();
+
+  uart0_init(9600);
+  uart1_init(9600);
   LPC_USART0->INTENSET = UART_STATUS_RXRDY;
   LPC_USART1->INTENSET = UART_STATUS_RXRDY;
-  // printf("Starting up...\r\n");
-  /*printf("AT+BAUD?4");*/
- /*printf("AT+PIN939251");*/
-  /*printf("AT+NAME?Luxo");*/
-  /*printf("AT+POWE3");*/
+  gpio_set_dir(0, 14, 0);
+  delay_init(3);
+  ow_init(0, 14);
+  printf("System Ready.. \r\n");
   while (1) {
-  }  
-  // printf("Shutting down...\r\n");
+    __WFI();
+    com_evt_hd();
+  }
 }
-
-// HM10 PIN 939251

@@ -1,13 +1,17 @@
 /**************************************************************************/
-/*!
-    @file     gpio.c
-    @author   K. Townsend
+/*
+    @file     one_wire.h
+    @author   Tyler Hoeflicker github.com/tylerflick
+    @brief    DS/Maxim OneWire library
+              Adapted from https://github.com/jdesbonnet/LPC810_SousVide/blob/master/src/onewire.c
+              Credit for original: github.com/jdesbonn
+
 
     @section LICENSE
 
     Software License Agreement (BSD License)
 
-    Copyright (c) 2013, K. Townsend (microBuilder.eu)
+    Copyright (c) 2015, Tyler Hoeflicker
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -33,58 +37,21 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 /**************************************************************************/
-#include <string.h>
 
-#include "gpio.h"
+#include "LPC8xx.h"
 
-void gpio_init(void)
-{
-  /* Enable AHB clock to the GPIO domain. */
-  LPC_SYSCON->SYSAHBCLKCTRL |=  (1 << 6);
-  LPC_SYSCON->PRESETCTRL    &= ~(1 << 10);
-  LPC_SYSCON->PRESETCTRL    |=  (1 << 10);
-}
+#ifndef ONEWIRE_H_
+#define ONEWIRE_H_
 
-uint32_t gpio_get_val(uint32_t port, uint32_t pin)
-{
-  uint32_t result = 0;
+void     ow_init(uint32_t port, uint32_t pin);
+void     ow_set_low(void);
+void     ow_set_high(void);
+uint8_t  ow_reset(void);
+uint32_t ow_read_int(void);
+uint32_t ow_read_bit(void);
+void     ow_write_bit(int b);
+void     ow_write_byte(int data);
+uint8_t  ow_read_byte(void);
+uint64_t ow_read_big_int(void);
 
-  if(pin < 0x20)
-  {
-    if (LPC_GPIO_PORT->PIN0 & (0x1 << pin))
-    {
-      result = 1;
-    }
-  }
-  else if(pin == 0xFF)
-  {
-    result = LPC_GPIO_PORT->PIN0;
-  }
-  return result;
-}
-
-void gpio_set_val(uint32_t port, uint32_t pin, uint32_t value)
-{
-  if (value)
-  {
-    LPC_GPIO_PORT->SET0 = 1 << pin;
-  }
-  else
-  {
-    LPC_GPIO_PORT->CLR0 = 1 << pin;
-  }
-  return;
-}
-
-void gpio_set_dir(uint32_t port, uint32_t pin, uint32_t dir)
-{
-  if(dir)
-  {
-    LPC_GPIO_PORT->DIR0 |= (1 << pin);
-  }
-  else
-  {
-    LPC_GPIO_PORT->DIR0 &= ~(1 << pin);
-  }
-  return;
-}
+#endif

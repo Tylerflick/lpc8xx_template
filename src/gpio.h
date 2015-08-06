@@ -42,10 +42,10 @@ extern "C" {
 
 #include "LPC8xx.h"
 
-void     gpioInit(void);
-uint32_t gpioGetPinValue (uint32_t port, uint32_t pin);
-void     gpioSetValue (uint32_t port, uint32_t pin, uint32_t value);
-void     gpioSetDir (uint32_t port, uint32_t pin, uint32_t dir);
+void     gpio_init(void);
+uint32_t gpio_get_val (uint32_t port, uint32_t pin);
+void     gpio_set_val (uint32_t port, uint32_t pin, uint32_t value);
+void     gpio_set_dir (uint32_t port, uint32_t pin, uint32_t dir);
 
 #ifdef __cplusplus
 }

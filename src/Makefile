@@ -11,8 +11,9 @@ CROSS 				= arm-none-eabi-
 FILENAME 			= firmware
 LINKERSCRIPT 	= ../ld/$(TARGET).ld
 
-CFLAGS	 			= -mthumb -mcpu=cortex-m0plus -MD
-CFLAGS			 += -Os --specs=nano.specs -ffunction-sections -fdata-sections -fno-builtin
+CFLAGS	 			= -mthumb -mcpu=cortex-m0plus -MD #-mfloat-abi=soft
+CFLAGS			 += -Os --specs=nano.specs -ffunction-sections -fdata-sections
+CFLAGS			 += -fno-builtin
 
 CC 						= ${CROSS}gcc
 LD 						= ${CROSS}ld
@@ -35,7 +36,9 @@ OBJS   				= main.o \
 				        uart.o \
 				        mrt.o \
 				        printf.o \
-						onewire.o \
+								one_wire.o \
+								delay.o \
+								ds18b20.o \
 				        printf-retarget.o \
 				        system_LPC8xx.o \
 				        gcc_startup_lpc8xx.o

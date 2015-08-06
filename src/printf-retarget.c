@@ -38,7 +38,7 @@
 
 void putchar(const char c)
 {
-  uart0SendChar(c);
+  uart0_snd_chr(c);
 }
 
 int puts(const char * str)

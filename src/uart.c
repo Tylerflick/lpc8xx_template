@@ -36,7 +36,7 @@
 #include <string.h>
 #include "uart.h"
 
-void uart0Init(uint32_t baudRate) {
+void uart0_init(uint32_t baudRate) {
   uint32_t clk;
   const uint32_t UARTCLKDIV=1;
 
@@ -65,14 +65,14 @@ void uart0Init(uint32_t baudRate) {
   LPC_USART0->CFG |= UART_ENABLE;
 }
 
-void uart1Init(uint32_t baudRate) {
+void uart1_init(uint32_t baudRate) {
   uint32_t clk;
   const uint32_t UARTCLKDIV=1;
 
   /* Setup the clock and reset UART1 */
   LPC_SYSCON->UARTCLKDIV = UARTCLKDIV;
   NVIC_DisableIRQ(UART1_IRQn);
-  
+
   LPC_SYSCON->SYSAHBCLKCTRL |=  UART1_CLK_ENABLE;
   LPC_SYSCON->PRESETCTRL    &= ~UART1_RST_N;
   LPC_SYSCON->PRESETCTRL    |=  UART1_RST_N;
@@ -94,14 +94,14 @@ void uart1Init(uint32_t baudRate) {
   LPC_USART1->CFG |= UART_ENABLE;
 }
 
-void uart2Init(uint32_t baudRate) {
+void uart2_init(uint32_t baudRate) {
   uint32_t clk;
   const uint32_t UARTCLKDIV=1;
 
   /* Setup the clock and reset UART2 */
   LPC_SYSCON->UARTCLKDIV = UARTCLKDIV;
   NVIC_DisableIRQ(UART1_IRQn);
-  
+
   LPC_SYSCON->SYSAHBCLKCTRL |=  UART2_CLK_ENABLE;
   LPC_SYSCON->PRESETCTRL    &= ~UART2_RST_N;
   LPC_SYSCON->PRESETCTRL    |=  UART2_RST_N;
@@ -125,43 +125,43 @@ void uart2Init(uint32_t baudRate) {
 }
 
 
-void uart0SendChar(char buffer) {
+void uart0_snd_chr(char buffer) {
   /* Wait until we're ready to send */
   while (!(LPC_USART0->STAT & UART_STATUS_TXRDY));
   LPC_USART0->TXDATA = buffer;
 }
 
-void uart0Send(char *buffer, uint32_t length) {
+void uart0_snd(char *buffer, uint32_t length) {
   while (length != 0) {
-    uart0SendChar(*buffer);
+    uart0_snd_chr(*buffer);
     buffer++;
     length--;
   }
 }
 
-void uart1SendChar(char buffer) {
+void uart1_snd_chr(char buffer) {
   /* Wait until we're ready to send */
   while (!(LPC_USART1->STAT & UART_STATUS_TXRDY));
   LPC_USART1->TXDATA = buffer;
 }
 
-void uart1Send(char *buffer, uint32_t length) {
+void uart1_snd(char *buffer, uint32_t length) {
   while (length != 0) {
-    uart1SendChar(*buffer);
+    uart1_snd_chr(*buffer);
     buffer++;
     length--;
   }
 }
 
-void uart2SendChar(char buffer) {
+void uart2_snd_chr(char buffer) {
   /* Wait until we're ready to send */
   while (!(LPC_USART2->STAT & UART_STATUS_TXRDY));
   LPC_USART2->TXDATA = buffer;
 }
 
-void uart2Send(char *buffer, uint32_t length) {
+void uart2_snd(char *buffer, uint32_t length) {
   while (length != 0) {
-    uart2SendChar(*buffer);
+    uart2_snd_chr(*buffer);
     buffer++;
     length--;
   }

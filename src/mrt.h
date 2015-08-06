@@ -47,7 +47,7 @@
 #define MRT_STAT_RUN         (0x1<<1)
 
 void MRT_IRQHandler(void);
-void mrtInit(uint32_t delay);
-void mrtDelay(uint32_t ticks);
+void mrt_init(uint32_t delay);
+void mrt_delay(uint32_t ticks);
 
 #endif

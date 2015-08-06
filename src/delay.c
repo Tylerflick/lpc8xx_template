@@ -1,13 +1,16 @@
 /**************************************************************************/
 /*!
-    @file     gpio.c
-    @author   K. Townsend
+    @file     delay.c
+    @author   Tyler Hoeflicker
+
+    @description Blocking timer based on the MRT bus stall mode. CPU will block
+    all processing/interupts until the timer has finished.
 
     @section LICENSE
 
     Software License Agreement (BSD License)
 
-    Copyright (c) 2013, K. Townsend (microBuilder.eu)
+    Copyright (c) 2015, Tyler Hoeflicker (github.com/tylerflick)
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -33,58 +36,34 @@
     SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 /**************************************************************************/
-#include <string.h>
+#include "LPC8xx.h"
+#include "delay.h"
+#include "mrt.h"
 
-#include "gpio.h"
+uint8_t ticks;
+uint8_t chan;
 
-void gpio_init(void)
+void delay_init(uint8_t channel)
 {
-  /* Enable AHB clock to the GPIO domain. */
-  LPC_SYSCON->SYSAHBCLKCTRL |=  (1 << 6);
-  LPC_SYSCON->PRESETCTRL    &= ~(1 << 10);
-  LPC_SYSCON->PRESETCTRL    |=  (1 << 10);
+  chan = channel;
+
+  LPC_SYSCON->SYSAHBCLKCTRL |= (0x1<<10);
+  LPC_SYSCON->PRESETCTRL &= ~(0x1<<7);
+  LPC_SYSCON->PRESETCTRL |= (0x1<<7);
+
+  LPC_MRT->Channel[chan].CTRL = MRT_ONE_SHOT_STALL;
+  ticks = SystemCoreClock/1000000;
 }
 
-uint32_t gpio_get_val(uint32_t port, uint32_t pin)
+void delay_ms(uint32_t millis)
 {
-  uint32_t result = 0;
+	uint32_t us = millis*1000;
+	if (us == 0)
+		return;
 
-  if(pin < 0x20)
-  {
-    if (LPC_GPIO_PORT->PIN0 & (0x1 << pin))
-    {
-      result = 1;
-    }
-  }
-  else if(pin == 0xFF)
-  {
-    result = LPC_GPIO_PORT->PIN0;
-  }
-  return result;
+  delay_us(us);
 }
 
-void gpio_set_val(uint32_t port, uint32_t pin, uint32_t value)
-{
-  if (value)
-  {
-    LPC_GPIO_PORT->SET0 = 1 << pin;
-  }
-  else
-  {
-    LPC_GPIO_PORT->CLR0 = 1 << pin;
-  }
-  return;
-}
-
-void gpio_set_dir(uint32_t port, uint32_t pin, uint32_t dir)
-{
-  if(dir)
-  {
-    LPC_GPIO_PORT->DIR0 |= (1 << pin);
-  }
-  else
-  {
-    LPC_GPIO_PORT->DIR0 &= ~(1 << pin);
-  }
-  return;
+void delay_us(uint32_t micros) {
+  LPC_MRT->Channel[chan].INTVAL = micros*ticks;
 }

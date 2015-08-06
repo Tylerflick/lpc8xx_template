@@ -50,7 +50,7 @@ extern "C" {
 #define UART0_CLK_ENABLE     (1 << 14)
 #define UART1_CLK_ENABLE     (1 << 15)
 #define UART2_CLK_ENABLE     (1 << 16)
-  
+
 #define UART0_RST_N          (1 << 3)
 #define UART1_RST_N          (1 << 4)
 #define UART2_RST_N          (1 << 5)
@@ -63,19 +63,18 @@ extern "C" {
 #define UART_STATUS_CTSDEL   (1 << 5)
 #define UART_STATUS_RXBRKDEL (1 << 11)
 
-void uart0Init     (uint32_t baudRate);
-void uart1Init     (uint32_t baudRate);
-void uart2Init     (uint32_t baudRate);
-void uart0SendChar (char buffer);
-void uart0Send     (char *buffer, uint32_t length);
-void uart1SendChar (char buffer);
-void uart1Send     (char *buffer, uint32_t length);
-void uart2SendChar (char buffer);
-void uart2Send     (char *buffer, uint32_t length);
+void uart0_init     (uint32_t baudRate);
+void uart1_init     (uint32_t baudRate);
+void uart2_init     (uint32_t baudRate);
+void uart0_snd_chr (char buffer);
+void uart0_snd     (char *buffer, uint32_t length);
+void uart1_snd_chr (char buffer);
+void uart1_snd     (char *buffer, uint32_t length);
+void uart2_snd_chr (char buffer);
+void uart2_snd     (char *buffer, uint32_t length);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
-
