@@ -29,4 +29,4 @@ This starter template supports all LPC8xx series MCU's with the original goal of
 ## Pull Requests
 Before submitting a pull request please ensure the following:
 * The change set follows the styling found in the repo. Think Linux kernel style guide.
-* If the change set is fixing bug's or adding support to the original files in LPC810_CodeBase, please submit it there.
+* If the change set is fixing bugs or adding support to the original files in LPC810_CodeBase, please submit it there.
