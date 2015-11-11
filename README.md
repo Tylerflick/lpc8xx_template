@@ -16,10 +16,10 @@ This starter template supports all LPC8xx series MCU's with the original goal of
 * Up to date documentation from NXP.
 
 ## To Do
-* Refactor `src` into a more common `src` & `inc` directories pattern.
-* Add add floating point support to the `printf` function.
-* Allow for different baud rates when using multiple UART channels in one project.
-* Add multiple device support to DS18B20 library.
+- [x] Refactor `src` directory into a modules directories pattern and update Makefile.
+- [ ] Add add floating point support to the `printf` function.
+- [ ] Allow for different baud rates when using multiple UART channels in one project.
+- [ ] Add multiple device support to DS18B20 library.
 
 ## Supported Make Commands
 
